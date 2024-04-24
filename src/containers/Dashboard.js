@@ -144,9 +144,17 @@ export default class {
         .html("")
       this.counter ++
     }
+    
+  //Pour garantir que les événements soient toujours déclenchés de façon indépendante, 
 
-    bills.forEach(bill => {
-      $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
+  //Tous les gestionnaires d'événements de clic sur les billets sont d'abord supprimés, 
+  bills.forEach(bill => {
+    $(`#open-bill${bill.id}`).off("click");
+  });
+  
+  //Puis réassociés à chaque billet lorsque handleShowTickets est appelée.
+  bills.forEach(bill => {
+    $(`#open-bill${bill.id}`).click((e) => this.handleEditTicket(e, bill, bills))
     })
 
     return bills
