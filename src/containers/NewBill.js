@@ -24,26 +24,27 @@ export default class NewBill {
 
     const allowedExtensions = ["jpg", "jpeg", "png"]
     const fileExtension = file.name.split(".").pop().toLowerCase()
-    const errorParagraph = fileInput.parentNode.querySelector(".error-message")
+    const errorMessage = fileInput.parentNode.querySelector(".error-file-extension")
 
     if (!allowedExtensions.includes(fileExtension)) {
-      if (!errorParagraph) {
-        const newErrorParagraph = document.createElement("p")
-        newErrorParagraph.className = "error-message"
-        newErrorParagraph.textContent =
+      if (!errorMessage) {
+        const newErrorMessage = document.createElement("p")
+        newErrorMessage.className = "error-file-extension"
+        newErrorMessage.textContent =
           "L'extension du fichier sélectionné n'est pas autorisée (choisir .jpg, .jpeg ou .png)."
-        fileInput.parentNode.appendChild(newErrorParagraph)
+        fileInput.parentNode.appendChild(newErrorMessage)
       } else {
-        errorParagraph.textContent =
+        errorMessage.textContent =
           "L'extension du fichier sélectionné n'est pas autorisée (choisir .jpg, .jpeg ou .png)."
       }
       fileInput.value = ""
       return
     }
     
-    if (errorParagraph) {
-      errorParagraph.textContent = ""
+    if (errorMessage) {
+      errorMessage.textContent = ""
     }
+  
 
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length - 1]
