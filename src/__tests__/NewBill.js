@@ -29,7 +29,7 @@ describe("Given I am connected as an employee", () => {
     const createMock = jest.fn().mockResolvedValue({
       fileUrl: "testUrl",
       key: "testKey",
-      status: 200,
+      status: 201,
     })
 
     const store = {
@@ -217,7 +217,7 @@ describe("Given I am connected as an employee", () => {
       })
 
       const response = await createMock.mock.results[0].value
-      expect(response.status).toBe(200)
+      expect(response.status).toBe(201)
     })
   })
 })
