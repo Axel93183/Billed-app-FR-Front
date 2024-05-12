@@ -9,21 +9,6 @@ describe("Given I am connected as an employee", () => {
   describe("When I am on NewBill Page", () => {
     let bill
 
-    document.body.innerHTML = `
-      <div>
-        <form data-testid="form-new-bill">
-          <select required data-testid="expense-type"></select>
-          <input data-testid="expense-name">
-          <input data-testid="amount">
-          <input required data-testid="datepicker">
-          <input data-testid="vat">
-          <input required data-testid="pct">
-          <textarea data-testid="commentary"></textarea>
-          <input required data-testid="file">
-          <button type="submit" id='btn-send-bill' class="btn btn-primary"></button>
-        </form>
-      </div>
-    `
     const onNavigate = jest.fn()
 
     const createMock = jest.fn().mockResolvedValue({
@@ -43,6 +28,22 @@ describe("Given I am connected as an employee", () => {
     localStorage.setItem("user", JSON.stringify({ email: "test@test.com" }))
 
     beforeEach(() => {
+      document.body.innerHTML = `
+      <div>
+        <form data-testid="form-new-bill">
+          <select required data-testid="expense-type"></select>
+          <input data-testid="expense-name">
+          <input data-testid="amount">
+          <input required data-testid="datepicker">
+          <input data-testid="vat">
+          <input required data-testid="pct">
+          <textarea data-testid="commentary"></textarea>
+          <input required data-testid="file">
+          <button type="submit" id='btn-send-bill' class="btn btn-primary"></button>
+        </form>
+      </div>
+    `
+
       bill = new NewBill({
         document,
         onNavigate,
@@ -116,36 +117,38 @@ describe("Given I am connected as an employee", () => {
       const invalidFile = new File(["file"], "invalid.txt", {
         type: "text/plain",
       })
+
       const inputElement = document.querySelector(`input[data-testid="file"]`)
-      if (!inputElement.files) {
-        Object.defineProperty(inputElement, "files", { value: [invalidFile] })
-      }
+      jest.spyOn(inputElement, "files", "get").mockReturnValue([invalidFile])
 
       const eventInvalid = {
         preventDefault: jest.fn(),
         target: { value: "C:\\filepath\\invalid.txt", files: [invalidFile] },
       }
-      await bill.handleChangeFile(eventInvalid)
+
+      bill.handleChangeFile(eventInvalid)
+
+      expect(document.querySelector(".error-file-extension")).toBeDefined()
 
       const validFile = new File(["file"], "valid.jpg", { type: "image/jpeg" })
-      if (!inputElement.files) {
-        Object.defineProperty(inputElement, "files", { value: [validFile] })
-      }
+
+      jest.spyOn(inputElement, "files", "get").mockReturnValue([validFile])
 
       const eventValid = {
         preventDefault: jest.fn(),
         target: { value: "C:\\filepath\\valid.jpg", files: [validFile] },
       }
-      await bill.handleChangeFile(eventValid)
 
-      const errorMessage = document.querySelector(".error-file-extension")
-      expect(errorMessage).toBeNull()
+      bill.handleChangeFile(eventValid)
+
+      expect(document.querySelector(".error-file-extension")).toBeNull()
     })
 
     test("Then I should navigate to ROUTES_PATH['Bills'] after form submission", async () => {
       const formElement = document.querySelector(
         `form[data-testid="form-new-bill"]`
       )
+
       const mockEvent = {
         preventDefault: jest.fn(),
         target: formElement,

@@ -17,6 +17,7 @@ export default class NewBill {
     this.billId = null
     new Logout({ document, localStorage, onNavigate })
   }
+
   handleChangeFile = (e) => {
     e.preventDefault()
     const fileInput = this.document.querySelector(`input[data-testid="file"]`)
@@ -24,27 +25,24 @@ export default class NewBill {
 
     const allowedExtensions = ["jpg", "jpeg", "png"]
     const fileExtension = file.name.split(".").pop().toLowerCase()
-    const errorMessage = fileInput.parentNode.querySelector(".error-file-extension")
+    let errorMessage = fileInput.parentNode.querySelector(
+      ".error-file-extension"
+    )
+
+    if (errorMessage) {
+      errorMessage.remove()
+    }
 
     if (!allowedExtensions.includes(fileExtension)) {
-      if (!errorMessage) {
-        const newErrorMessage = document.createElement("p")
-        newErrorMessage.className = "error-file-extension"
-        newErrorMessage.textContent =
-          "L'extension du fichier sélectionné n'est pas autorisée (choisir .jpg, .jpeg ou .png)."
-        fileInput.parentNode.appendChild(newErrorMessage)
-      } else {
-        errorMessage.textContent =
-          "L'extension du fichier sélectionné n'est pas autorisée (choisir .jpg, .jpeg ou .png)."
-      }
+      errorMessage = document.createElement("p")
+      errorMessage.className = "error-file-extension"
+      fileInput.parentNode.appendChild(errorMessage)
+      errorMessage.textContent =
+        "L'extension du fichier sélectionné n'est pas autorisée (choisir .jpg, .jpeg ou .png)."
+
       fileInput.value = ""
       return
     }
-    
-    if (errorMessage) {
-      errorMessage.textContent = ""
-    }
-  
 
     const filePath = e.target.value.split(/\\/g)
     const fileName = filePath[filePath.length - 1]
@@ -59,7 +57,7 @@ export default class NewBill {
         data: formData,
         headers: {
           noContentType: true,
-        }
+        },
       })
       .then(({ fileUrl, key }) => {
         console.log(fileUrl)

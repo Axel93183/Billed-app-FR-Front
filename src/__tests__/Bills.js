@@ -13,7 +13,7 @@ import mockStore from "../__mocks__/store"
 import router from "../app/Router.js"
 import Bills from "../containers/Bills.js"
 
-jest.mock("../app/store", () => mockStore)
+jest.mock("../app/Store", () => mockStore)
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
